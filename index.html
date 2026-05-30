@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>麻醉科 ── 重點整理</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+
+:root {
+  --ink:       #2C1A0E;
+  --ink-muted: #5A3D2B;
+  --ink-soft:  #9C7A5E;
+  --page:      #FDF7E9;
+  --border:    #E2CBA8;
+  --accent1:   #B84A2D;
+  --accent2:   #5C3D2E;
+  --accent3:   #3D6B54;
+  --accent4:   #C06C2E;
+  --accent5:   #6B4C7A;
+  --sidebar-w: 260px;
+  --topbar-h:  48px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Sans TC', sans-serif;
+  background: var(--page); color: var(--ink);
+  line-height: 1.75; font-size: 15px; overflow-x: hidden;
+}
+#topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  background: var(--accent2); color: #fff;
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0 1.2rem; height: var(--topbar-h);
+  font-size: 13px; letter-spacing: .06em;
+  box-shadow: 0 2px 10px rgba(0,0,0,.2);
+}
+#topbar .title-bar { font-weight: 700; font-size: 14px; letter-spacing: .1em; flex: 1; }
+#topbar .meta { opacity: .65; font-size: 12px; }
+#topbar .tag {
+  background: var(--accent1); color: #fff;
+  padding: 2px 10px; border-radius: 12px;
+  font-size: 11px; font-weight: 700;
+}
+#menu-toggle {
+  background: none; border: none; color: #fff;
+  cursor: pointer; padding: 6px; border-radius: 4px;
+  display: flex; flex-direction: column; gap: 5px; flex-shrink: 0;
+}
+#menu-toggle span {
+  display: block; width: 20px; height: 2px;
+  background: #fff; border-radius: 2px; transition: all .25s;
+}
+#menu-toggle.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+#menu-toggle.open span:nth-child(2) { opacity: 0; }
+#menu-toggle.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+#shell { display: flex; padding-top: var(--topbar-h); min-height: 100vh; }
+#sidebar {
+  width: var(--sidebar-w); flex-shrink: 0;
+  position: fixed; top: var(--topbar-h); left: 0; bottom: 0;
+  overflow-y: auto; background: #FFFDF7;
+  border-right: 1px solid var(--border);
+  padding: 1rem 0 2rem; z-index: 150;
+  transition: transform .3s ease;
+}
+#sidebar::-webkit-scrollbar { width: 4px; }
+#sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+#sidebar.collapsed { transform: translateX(-100%); }
+.toc-title {
+  font-size: 10px; font-weight: 700; letter-spacing: .12em;
+  color: var(--ink-soft); text-transform: uppercase;
+  padding: .4rem 1.1rem .6rem; border-bottom: 1px solid var(--border);
+  margin-bottom: .5rem;
+}
+.toc-part { margin-bottom: .2rem; }
+.toc-part-header {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .45rem 1rem .45rem .9rem; cursor: pointer;
+  font-weight: 600; font-size: .82rem; color: var(--accent2);
+  border-left: 3px solid transparent; user-select: none; transition: background .15s;
+}
+.toc-part-header:hover { background: #F5EAD8; border-left-color: var(--accent2); }
+.toc-chevron { margin-left: auto; font-size: .7rem; color: var(--ink-soft);
+  transition: transform .2s; flex-shrink: 0; }
+.toc-part-header.open .toc-chevron { transform: rotate(90deg); }
+.toc-badge {
+  background: var(--accent2); color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .62rem; font-weight: 700;
+  padding: 1px 5px; border-radius: 3px; flex-shrink: 0;
+}
+.toc-part-label { flex: 1; min-width: 0; line-height: 1.3; }
+.toc-sections { display: none; }
+.toc-sections.open { display: block; }
+.toc-sec {
+  display: block; padding: .32rem 1rem .32rem 2rem;
+  font-size: .78rem; color: var(--ink-muted);
+  text-decoration: none; border-left: 3px solid transparent;
+  transition: background .12s, color .12s; line-height: 1.4;
+}
+.toc-sec:hover { background: #F5EAD8; color: var(--accent2); border-left-color: var(--accent3); }
+.toc-sec.active { background: #E5EDE8; color: var(--accent3); border-left-color: var(--accent3); font-weight: 600; }
+#sidebar-overlay { display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.4); z-index: 140; }
+#main {
+  flex: 1; margin-left: var(--sidebar-w);
+  padding: 2.5rem 3rem 6rem; min-width: 0;
+  transition: margin-left .3s ease;
+}
+#main.expanded { margin-left: 0; }
+.hero {
+  border-left: 6px solid var(--accent2);
+  background: linear-gradient(135deg, #FAF0DC 0%, #F5E8CE 100%);
+  padding: 2rem 2.4rem 1.8rem; margin-bottom: 3rem;
+  border-radius: 0 8px 8px 0;
+}
+.hero h1 {
+  font-family: 'Noto Serif TC', serif; font-size: 2rem;
+  font-weight: 700; color: var(--accent2); line-height: 1.25; margin-bottom: .6rem;
+}
+.hero .subtitle { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: .8rem; }
+.hero .chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255,255,255,.7); border: 1px solid var(--border);
+  border-radius: 20px; padding: 3px 12px;
+  font-size: 12px; font-weight: 500; color: var(--ink-muted);
+}
+.hero .chip.red  { border-color: var(--accent1); color: var(--accent1); background: rgba(255,255,255,.8); }
+.hero .chip.blue { border-color: var(--accent2); color: var(--accent2); background: rgba(255,255,255,.8); }
+.part {
+  margin: 3rem 0 1.5rem; padding: .9rem 1.6rem;
+  background: var(--accent2); color: #fff;
+  border-radius: 6px; display: flex; align-items: flex-start; gap: 1rem;
+}
+.part-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.4rem; font-weight: 600; opacity: .4; flex-shrink: 0;
+}
+.part > div { flex: 1; min-width: 0; }
+.part > div h2 { font-family: 'Noto Serif TC', serif; font-size: 1.05rem;
+  font-weight: 700; letter-spacing: .04em; margin: 0 0 .25rem; }
+.part > div .ref-tags { margin-top: .25rem; opacity: .85; }
+.section { margin: 2.2rem 0 1rem; }
+.section-header {
+  display: flex; align-items: flex-start; gap: .8rem; flex-wrap: wrap;
+  border-bottom: 2px solid var(--accent3);
+  padding-bottom: .4rem; margin-bottom: 1.1rem;
+}
+.section-header h3 {
+  font-family: 'Noto Serif TC', serif; font-size: 1rem;
+  font-weight: 700; color: var(--accent2); line-height: 1.4; margin: 0;
+}
+.ref-tags { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; }
+.ref-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 600;
+  background: var(--accent1); color: #fff;
+  padding: 1px 6px; border-radius: 3px; white-space: nowrap;
+}
+.content { padding: 0; }
+ul, ol { padding-left: 1.5em; margin: .35em 0; }
+li { margin: .28em 0; }
+li ul, li ol { margin: .2em 0; }
+ul > li { list-style: disc; }
+ul > li > ul > li { list-style: circle; }
+ul > li > ul > li > ul > li { list-style: square; }
+strong { color: var(--ink); }
+p { margin: .4em 0; }
+.callout {
+  border-radius: 5px; padding: .75rem 1rem; margin: .8rem 0;
+  display: flex; gap: .6rem; align-items: flex-start; font-size: .9rem;
+}
+.callout-icon { flex-shrink: 0; font-size: .95rem; margin-top: 1px; }
+.callout-body { flex: 1; }
+.callout-body p { margin: 0; }
+.callout.warn  { background: #FEF7E0; border-left: 4px solid #D4900A; }
+.callout.tip   { background: #E5EDE8; border-left: 4px solid var(--accent3); }
+.callout.info  { background: #EEF0F5; border-left: 4px solid var(--accent2); }
+.hl-red    { color: var(--accent1); font-weight: 600; }
+.hl-blue   { color: var(--accent2); font-weight: 600; }
+.hl-teal   { color: var(--accent3); font-weight: 600; }
+.hl-orange { color: var(--accent4); font-weight: 600; }
+.hl-purple { color: var(--accent5); font-weight: 600; }
+.hl-gray   { color: var(--ink-soft); }
+.bg-yellow { background: #F9EDD0; padding: 1px 3px; border-radius: 2px; }
+.bg-red    { background: #F9E4DF; padding: 1px 3px; border-radius: 2px; }
+.table-wrap { overflow-x: auto; margin: .9rem 0 1.1rem; border-radius: 6px; }
+table { width: 100%; border-collapse: collapse;
+  font-size: .86rem; line-height: 1.5; border: 1px solid var(--border); }
+thead th {
+  background: var(--accent2); color: #fff; font-weight: 600;
+  padding: .5rem .75rem; text-align: left; letter-spacing: .02em;
+  border-right: 1px solid rgba(255,255,255,.15);
+}
+thead th:last-child { border-right: none; }
+/* Fix: strong / any child inside th must stay white */
+thead th, thead th * { color: #fff; }
+tbody tr:nth-child(even) { background: #FAF3E8; }
+tbody tr:hover { background: #F5EAD8; }
+td { padding: .45rem .75rem; border-right: 1px solid var(--border);
+  border-top: 1px solid var(--border); vertical-align: top; }
+td:last-child { border-right: none; }
+.cell-yellow { background: #F9EDD0 !important; }
+.cell-teal   { background: #DFF0E9 !important; }
+.cell-blue   { background: #EAF0F7 !important; }
+.cell-red    { background: #FAECE8 !important; }
+.cell-orange { background: #FAF0E2 !important; }
+.cell-gray   { background: #EFE8DF !important; }
+.formula-inline {
+  font-family: 'JetBrains Mono', monospace; font-size: .88rem;
+  color: var(--accent5); background: #F2EBF8;
+  border-radius: 3px; padding: 1px 5px; font-weight: 600;
+}
+blockquote {
+  border-left: 3px solid var(--accent2); padding: .4rem 1rem;
+  margin: .5rem 0; color: var(--ink-muted); font-style: italic;
+}
+#totop {
+  position: fixed; bottom: 1.5rem; right: 1.5rem;
+  width: 38px; height: 38px; background: var(--accent2); color: #fff;
+  border: none; border-radius: 50%; font-size: 1rem; cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0,0,0,.2);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .15s; z-index: 190;
+}
+#totop:hover { transform: translateY(-3px); }
+@media (max-width: 900px) {
+  :root { --sidebar-w: 240px; }
+  #main { padding: 1.8rem 1.8rem 5rem; }
+}
+@media (max-width: 700px) {
+  #sidebar { transform: translateX(-100%); }
+  #sidebar.open { transform: translateX(0); }
+  #sidebar-overlay.visible { display: block; }
+  #main { margin-left: 0 !important; padding: 1.2rem 1rem 5rem; }
+  .hero h1 { font-size: 1.5rem; }
+  .hero { padding: 1.4rem 1.4rem 1.2rem; }
+  .part { flex-direction: column; gap: .3rem; padding: .8rem 1.2rem; }
+  .part-num { font-size: 1rem; }
+  .part h2 { font-size: .95rem; }
+  .section-header { flex-direction: column; gap: .4rem; }
+  thead th, td { font-size: .78rem; padding: .35rem .55rem; }
+  #topbar .meta { display: none; }
+}
+@media (max-width: 480px) {
+  #main { padding: 1rem .75rem 5rem; }
+  body { font-size: 14px; }
+  .hero h1 { font-size: 1.3rem; }
+  .toc-sec { font-size: .75rem; }
+}
+
+/* ── Attribution strip in topbar ── */
+.attr-strip {
+  display: flex; align-items: center; gap: .6rem;
+  padding-left: .8rem;
+  border-left: 1px solid rgba(255,255,255,.2);
+  flex-shrink: 0;
+}
+.attr-logo {
+  height: 32px; width: 32px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.4);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.attr-links {
+  display: flex; flex-direction: column; gap: 2px;
+}
+.attr-link {
+  display: flex; align-items: center; gap: 4px;
+  color: rgba(255,255,255,.8); text-decoration: none;
+  font-size: 10px; letter-spacing: .02em;
+  transition: color .15s;
+  line-height: 1;
+}
+.attr-link:hover { color: #fff; }
+.attr-link svg { flex-shrink: 0; }
+@media (max-width: 700px) {
+  .attr-links { display: none; }
+  .attr-logo { height: 28px; width: 28px; }
+  .attr-strip { border-left: none; padding-left: .4rem; }
+}
+
+
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <button id="menu-toggle" aria-label="開啟目錄" onclick="toggleSidebar()">
+    <span></span><span></span><span></span>
+  </button>
+  <span class="title-bar">麻醉科 ── 重點整理</span>
+  <span class="meta">醫學(六)</span>
+  <span class="tag">必讀</span>
+  <div class="attr-strip"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAAKzklEQVR42m2YW3Mcx3XHf6e7Z2bvWBA3EiREUqJMU5YUSZYjld9ceUgqLqfKqXyMfIi85HvkLW95TaVSTuxcqhw7chLZFCWVKEgASZDAAou9z0xP98nDLhcLiFO1tTN9OX36XP7/0y1x9lxBQQUQEFBAdP45/5r/KzJvAi4GcunRxfhL41gdGhdyVtsXvaq45aSVxUVlodGFOrIUKEDkyqrL9qXKi13ppeXn42QpVFfaFQTMxZIrHSyMprIiTFYUFF49Ty4J54oql7YnK+96Mc9cCJm7QMQhLpnPEV3qh8plD6m5YiJd0VF4hQkv3LwMkQtLvXzMJS8aRzntMzp6RAiBGCNRw9Kdogt3LV2qV1x20aSLeFnd0KWhSyXiygTBXWgdCCjj00Nmx18iWZtas4X3gVq9cxFjS6UAeamEXLgas9i0XvSvzhX9rtWWLgaJ0+cqYij9FNRjBXw5wyQ1RCBUkSTrYI1ZWlusm+dT9BdGMhYRg4awGCQrIRMvpcV3449Vly2iXQyhqpjmOQHLdDKm9BViDTFWizGCGkMxPKYY98AkSJIhSZ3gc4pRDzUGSTLQiBhBXIKIXUWPFffJFUXBzVMTRAygpIlDVUmaLUxVUAwHJN1dEIsvcyZf/jMufwEI086buPU7hLOvKM8P0XJKtv090s171DZfJxQTqslTbL1LUltDQ7mw3IqlVC7FvsTpc0WEGCp8fk5Sy5iOxxhroSqofE69e5O03uX80T+R9B+SF4FY5SRZhi9LarUaVRTMIjOjJPj6LjZMabiSMgj2xsc0d99CqwIWm/9OHAEGUVBFrCXECogYKwgRV2uQttbREIhViY6eYpzj288/5azXo97q0GivgctwaYKrNRCbktXq1ItnJNWAk6cH6OQEf/gflNMBYhJQvYxMeuE2t8RfEYzJKGYl1tYwxoEYUptgrAHrqGyT0dEjdm7t0d26js9nIIIYQ/QFscrBWIIHkzXQGHhxeEDcuc76doqfnJE2uhD9JdznJd4JuGXKqVJrrc+ttcTLBX3EiMSKzoM/5XhwzFqSEzWgwWOSGsSIViUYh3EOVNGqQIzlzv3vU03OmJaRjfYmqH8F5VzNsiWKxgU9BlQDihIrDyKoBpJam6zeXKS7orFCUTQGxCYLEQHjUsQkBF+Spgllco36/Z+S1NrEEFeW/S5am1eCgSqSZEwe/o7Z/hdIliFi8JP+PI6MQ0yCJE1iVYEYFEF1rlxVlehic9EX1DbfYO21d9EqR2SFB1WvQAAv2X6FnyTOLeJL6m88IKKU4yFprUn0M4QAQIgVWZpCFIo8J1YlJklxSYZqJPgcUQi+RP0E9cVi/3NEF7FgDBqrS5Yyl8jxEqwrtt7EZnU0xjnQ2YyghqjQSBJ+83+P+cV/fUF7+wZrew9wWYPReMpwnGNQQlXOFU1biHWoxjkAh8CTg1+Tz86ucOAyeq8A1cuvEBAgq9XR4Klt3EQ6e/jzM/S4YqfV4P477zJpfZ9/e3hGdvcjPn864Ze/+Zy6FVQjZVGQbt5b7l9VCdEznQw46z1GRVCtliqYC1LkojS4kgAxRnAJvf/+Ffb6x8xsi7HvcfvWJvfe+SGVrxj1j4nU+eOPP+TP37tH8SLHj8+Ia3dp3XwL9fncA8YyGhyQ1bo0W7sc7v9qAZTzpY2qzmMLEGOWxHk5+xRxCWdlzosnn9B55884dym93hHDb37PWivlZ3/5c1IX0dELos44L3oMtcPGB3+FdS/dJaCB7vobNJsbDPsHrHXvzOOJOOdLLU8UEYiRIp/iq5JWqwuqxBiWHIcI+WzE5Hd/S/vNn6PJLr3Hv6V/8BBmfWrNDqEqMS7BNdapb99l/c4fIUkTk3RI0hpxAQmjwVOeHv4PtVqX9to2G1vfm+OYCO7s9BnDYZ/xuE/UiPcla+0N7tx9C5dkxKpEjCMfvUBEKVsfMPjyH2i9/dfceu9P2HrzQwbPviLvH+Ga67R27lBrdPB+zlmxHBMqj5htrLWoRmIxQ8djJsMZG+0dqmKCTTJQxf7sLz76m8rPuHXjNTY6HTY6a5wOTnn+/FsajQ61Vpdyco5QMj1+TP7kIQkV/RdPaGzcJWt1aW7usbb3Fu3t22StLtP+M84OHmLTjGxtB2cNZVmQZC1COSU/eogfjylnU0xxjkssaWsHVDHOGIqyYloW2FiQj3s0Wh2KyvP7P/wnTw++nBdt0wHDz37Bei3S7NyhGWecH31N5QvK6YCYjwj5iOGTRxRf/ztbdgCHv2Z88Ck2rSPVdB6RNiWrG15/cId3PvqA7b3riKshZh67TjRSVYEnz77hhUsp8imWQKfZptPdwsaSYf+Eavic4AuKWaSW1NEwRfNnqPsxoTpndn5C0ugSSfHjM7zpYkPOyWf/AkmDEA2msUM13Gew/0tOBgWigqtFand/TNbZxSYZbtZ7Bq1Ngi/ZvJawfusmjVaHqMJ0MmT4/BFhcMZJf0Ca7CBhxmwwwdsu2eQQqoKs0UUAl9bJWluYpMb06DOIgc4Pdnl+3GP87DFv+jEST+lublB0m8RoyBopVX7IcP8fad74Ie6t7ZTf7n8NjW1uvf8j+r3njA6/RIsh9VrKjRsbVJ0Gp5OCvfd/wtbOLWajPlmzw/DkKWenx2zdvI2xyUs0pXPjPq2dN4kacc7RmU3Yl0i9XqeYGZIko6o8zhmcEUzjBl66lGePkNlnf6fj0YhvemPWO21ajRr1zgat9S2k8owPv2YwGHLe2OIH7/+E4HNQj7gGIpYQKpy1VOV4XhsBYmtoCGj05KNjmht77D9+yFoYkpkhmT3h5OsTysmUnft3KcspPiS0b36I6z8+oH69y/vvvU9l6/hihu/3OX/yCeVkgrS7DAM0OpsIkfzoXzFZl2zrYzQUoEo+7mNdiphF0WXm7G9cQtLcAKC7eZPTr45oVqdcWxuxc+8mVRBS5xkOKpo77+KyNVxKndH+EZp0MZOc6qyHOEe2e5vGvU2efP4p/f6Adz/YI2JINn6E2Izo88Xp1pDUO3O8sm5utWKCBo+YuXs0Kt21a5xkDSpf55tvj1jvlriswXQWiLJN2yRoKHFmd4P6iSXuP0U6LdLXHxCbbfx4yPkfPsGPhrRv3KXOjPJ8hKrii1MqP8OIwVhLkrWoNdqUkyGj82PKYkZQMMaSpBlJWifNati0jml32dv8iNE0xztHveiRttewzoJY3PnBIe3dG9Tvv82gKHGzCfm3n+CLEddu3cZ3r/HF/hN656fEOIcIX3mqKqChovIlIMy8QgykEggYnHOkSYJzFucsaWIJIXJ7Z4vtjdfY3Hsbl9Upnjyk9J4qaSGqSO9//177Xz2is3sbPx6gWtHc2qHe6UKsKGYzpvm80jOLoDXOYpB5vRMjk9xzPplSSyzXmnWccxgjCIpJahhriSFgrcMrZFt3qXe30VCBTRAivcef0OpsI3H4uU5PvmVy/IzGtU2y9hrqZ4RyrsT8NGIQY9EY5r+XlyxiEGMwIlhriTHiy3x+KFjw1pzJWQb7dDIkn45JW13SVpdY5vhiSmosresPkDh7rkIEZyFEYjlFo18cf+O8Nha7OHGGi+OLsfNbkxhAK3R5naMQq8Ucc1HBBL/gqhStSop8QlVM8X5GrdGlubGHSorE2ZEuby+EhRDhlfd137mgunp59ap5K/2rr3ZhuRjmh4QQgMj/A+4xuVIGs6nOAAAAAElFTkSuQmCC" class="attr-logo" alt="logo"><div class="attr-links"><a href="https://www.instagram.com/bear_med_notes/" target="_blank" rel="noopener" class="attr-link" title="Instagram">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+          </svg><span>Instagram</span></a><a href="https://www.threads.com/@bear_med_notes" target="_blank" rel="noopener" class="attr-link" title="Threads">
+          <svg width="14" height="14" viewBox="0 0 192 192" fill="currentColor"><path d="M141.537 88.988a66.667 66.667 0 0 0-2.518-1.143c-1.482-27.307-16.403-42.94-41.457-43.1h-.34c-14.986 0-27.449 6.396-35.12 18.036l13.779 9.452c5.73-8.695 14.724-10.548 21.348-10.548h.23c8.248.054 14.476 2.452 18.515 7.129 2.94 3.396 4.909 8.102 5.881 14.063-7.369-1.252-15.315-1.633-23.773-1.14-23.921 1.378-39.317 15.316-38.344 34.708.49 9.797 5.437 18.221 13.94 23.741 7.196 4.714 16.462 7.005 26.1 6.494 12.70-.694 22.726-5.532 29.787-14.379 5.487-6.953 8.96-15.956 10.524-27.3 6.309 3.807 10.975 8.808 13.561 14.852 4.647 10.942 4.907 28.988-9.348 43.23-12.508 12.496-27.556 17.906-50.328 18.07-25.237-.183-44.317-8.286-56.7-24.083C9.026 133.73 3.481 116.21 3.27 94.99c.21-21.22 5.755-38.74 16.484-52.08C32.136 26.913 51.216 18.81 76.453 18.627c25.438.185 44.913 8.329 57.87 24.201 6.4 7.895 11.163 17.96 14.204 29.993l16.12-4.267c-3.664-14.47-9.545-26.87-17.573-36.94C130.55 12.974 106.527 2.404 76.5 2.187h-.09C46.496 2.404 22.668 12.977 6.578 31.293-7.382 47.2-14.399 69.126-14.609 94.99v.022c.21 25.864 7.227 47.79 21.187 63.696 16.09 18.317 39.918 28.89 69.814 29.107h.09c26.68-.185 45.496-7.17 60.941-22.594 20.047-20.011 19.464-45.049 12.854-60.406-4.713-11.09-13.706-20.09-26.74-26.827z"/></svg>
+          <span>Threads</span></a></div></div>
+</div>
+
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<div id="shell">
+  <nav id="sidebar">
+    <div class="toc-title">目 錄</div>
+<div class="toc-part">
+  <div class="toc-part-header open" onclick="togglePart(this)">
+    <span class="toc-badge">P1</span>
+    <span class="toc-part-label">第一部分：呼吸道評估、插管與呼吸生理</span>
+    <span class='toc-chevron'>▶</span>
+  </div>
+  <div class="toc-sections open">
+<a class="toc-sec" href="#sec-1">困難呼吸道評估 (LEMON 法則與特徵)</a>
+<a class="toc-sec" href="#sec-2">呼吸道處置與插管輔助工具</a>
+<a class="toc-sec" href="#sec-3">急性併發症與 ARDS 呼吸設定</a>
+</div>
+</div>
+<div class="toc-part">
+  <div class="toc-part-header open" onclick="togglePart(this)">
+    <span class="toc-badge">P2</span>
+    <span class="toc-part-label">第二部分：麻醉生理與重要監測指標</span>
+    <span class='toc-chevron'>▶</span>
+  </div>
+  <div class="toc-sections open">
+<a class="toc-sec" href="#sec-4">脈搏血氧飽和度 (SpO2) 與二氧化碳監測…</a>
+<a class="toc-sec" href="#sec-5">血行動力學與其他監測 (CVP, PAWP,…</a>
+<a class="toc-sec" href="#sec-6">體溫調節與低體溫 (Hypothermia)</a>
+<a class="toc-sec" href="#sec-7">Aldrete score (麻醉後復甦評分…</a>
+</div>
+</div>
+<div class="toc-part">
+  <div class="toc-part-header open" onclick="togglePart(this)">
+    <span class="toc-badge">P3</span>
+    <span class="toc-part-label">第三部分：靜脈與吸入性麻醉藥物</span>
+    <span class='toc-chevron'>▶</span>
+  </div>
+  <div class="toc-sections open">
+<a class="toc-sec" href="#sec-8">常見靜脈麻醉藥 (Intravenous A…</a>
+<a class="toc-sec" href="#sec-9">吸入性麻醉藥 (Inhalational A…</a>
+</div>
+</div>
+<div class="toc-part">
+  <div class="toc-part-header open" onclick="togglePart(this)">
+    <span class="toc-badge">P4</span>
+    <span class="toc-part-label">第四部分：肌肉鬆弛劑、局部麻醉藥與疼痛管理</span>
+    <span class='toc-chevron'>▶</span>
+  </div>
+  <div class="toc-sections open">
+<a class="toc-sec" href="#sec-10">肌肉鬆弛劑 (NMBDs) 與 術後監測</a>
+<a class="toc-sec" href="#sec-11">局部麻醉藥 (Local Anestheti…</a>
+<a class="toc-sec" href="#sec-12">疼痛管理與鴉片類藥物 (Opioids)</a>
+</div>
+</div>
+<div class="toc-part">
+  <div class="toc-part-header open" onclick="togglePart(this)">
+    <span class="toc-badge">P5</span>
+    <span class="toc-part-label">第五部分：區域麻醉、特殊病患與併發症</span>
+    <span class='toc-chevron'>▶</span>
+  </div>
+  <div class="toc-sections open">
+<a class="toc-sec" href="#sec-13">脊椎麻醉 (Spinal) 與硬脊膜外麻醉 …</a>
+<a class="toc-sec" href="#sec-14">特殊疾病麻醉注意事項</a>
+</div>
+</div>
+
+  </nav>
+
+  <main id="main">
+    <div class="hero">
+      <h1>麻醉科<br>重點整理</h1>
+      <div class="subtitle">
+        <span class="chip blue">📋 科別：麻醉科</span>
+        <span class="chip blue">📑 考卷：醫學(六)</span>
+        <span class="chip red">⭐ 重要性：必讀</span>
+      </div>
+    </div>
+
+    <div class="part" id="part-1">
+  <span class="part-num">P1</span>
+  <div><h2>第一部分：呼吸道評估、插管與呼吸生理</h2></div>
+</div>
+<div class="section">
+  <div class="section-header">
+    <h3 id="sec-1">困難呼吸道評估 (LEMON 法則與特徵)</h3>
+    <div class="ref-tags"><span class="ref-tag">112-2-1</span><span class="ref-tag">111-1-76</span><span class="ref-tag">109-1-1</span></div>
+  </div>
+  <div class="content">
+<ul>
+<li><strong>困難插管高風險族群：</strong><ul>
+<li>唐氏症 (小口、大舌頭、下頷突出、頸部伸展受限)</li>
+</ul>
+<ul>
+<li>類風濕性關節炎 (頸椎不穩定、顳顎關節功能不良)</li>
+</ul>
+<ul>
+<li>阻塞性睡眠呼吸中止症 OSA (肥胖、口咽狹窄、粗短脖子)</li>
+</ul>
+<ul>
+<li>下頷後縮等</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>LEMON 評估法</strong>：<ul>
+<li><span class="hl-blue"><strong>L</strong></span>ook externally：下頷短、短頸、肥胖、下巴內縮</li>
+</ul>
+<ul>
+<li><span class="hl-blue"><strong>E</strong></span>valuate 3-3-2：張口小於 3 指幅、下頷前緣到舌骨小於 3 指幅、舌骨到甲狀軟骨小於 2 指幅</li>
+</ul>
+<ul>
+<li><span class="hl-blue"><strong>M</strong></span>allampati 分級：請病患張大嘴 (不發聲)，觀察口咽狹窄程度<ul>
+<li>Class I：可見懸壅垂、軟顎、兩側咽弓</li>
+</ul>
+<ul>
+<li>Class II：可見軟顎、兩側咽弓，但懸壅垂被舌根遮住</li>
+</ul>
+<ul>
+<li>Class III：僅看到軟顎基部 (Soft palate)</li>
+</ul>
+<ul>
+<li>Class IV：完全無法看到軟顎 (Hard palate only)</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><span class="hl-blue"><strong>O</strong></span>bstruction：呼吸道內外有阻塞</li>
+</ul>
+<ul>
+<li><span class="hl-blue"><strong>N</strong></span>eck mobility：頸椎骨折、僵直性脊椎炎、RA 等活動受限</li>
+</ul>
+</li>
+</ul>
+<div class="section">
+  <div class="section-header">
+    <h3 id="sec-2">呼吸道處置與插管輔助工具</h3>
+    <div class="ref-tags"><span class="ref-tag">114-2-1</span><span class="ref-tag">114-1-1</span><span class="ref-tag">113-2-1</span><span class="ref-tag">113-1-1</span><span class="ref-tag">112-1-76</span><span class="ref-tag">112-1-1</span><span class="ref-tag">111-2-1</span><span class="ref-tag">111-1-1</span><span class="ref-tag">110-2-1</span></div>
+  </div>
+  <div class="content">
+<div class="table-wrap"><table>
+<thead><tr>
+<th>處置或工具名稱</th>
+<th>臨床特點與適應症</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>快速順序插管 (RSI)<br></strong><span class="hl-red"><strong>[114-2-1]</strong></span></td>
+<td>● 適用於「飽食、孕婦、腸阻塞」等<span class="hl-blue"><strong>高吸入性肺炎風險</strong></span>病患<br><strong>● 步驟：<br></strong>→ 預先給氧 <br>→ 給予誘導藥<br>  • <span class="hl-teal"><strong>Kentamine</strong></span> (1-2mg/kg)<br>→ 快速肌肉鬆弛劑 <br>  • <span class="hl-teal"><strong>Succinylcholine</strong></span> 或 <span class="hl-teal"><strong>Rocuronium</strong></span> <br>→ 施壓環狀軟骨 (Cricoid pressure) <br>→ 插管<br><br><strong>⚠️ 考點提醒：<br>  • </strong><span class="hl-red"><strong>不適合</strong></span><strong>用光纖內視鏡輔助插管 (增加缺氧時間)</strong></td>
+</tr>
+<tr>
+<td><strong>軟式光纖支氣管鏡<br></strong><span class="hl-red"><strong>[113-1-1]</strong></span></td>
+<td>● <span class="hl-red"><strong>困難插管、頸部伸展禁忌症 (頸椎骨折)</strong></span><span class="hl-red"> </span>的首選工具<br>● <span class="hl-red"><strong>可清醒</strong></span><strong>插管</strong>、<strong>經鼻</strong><strong>或</strong><strong>經口</strong>插管，對氣道傷害較小</td>
+</tr>
+<tr>
+<td><strong>口咽 / 鼻咽人工氣道</strong></td>
+<td>● <strong>口咽氣道 (OPA)：僅適用於</strong><span class="hl-red"><strong>昏迷</strong></span><strong>病患</strong><br>  • 清醒者會誘發嘔吐與氣管痙攣<br>● <strong>鼻咽氣道 (NPA)：清醒或昏迷</strong><span class="hl-red"><strong>皆可使用</strong></span><br>  • 禁忌症為「顱底骨折、凝血異常」</td>
+</tr>
+<tr>
+<td><strong>環甲膜切開術</strong></td>
+<td>● <strong>適用於 </strong><span class="hl-red"><strong>無法插管且無法通氣 (CVCI)</strong></span><strong> 的極度緊急狀況</strong><br>● <span class="hl-red"><span class="bg-red"><strong>禁忌症：六歲以下兒童</strong></span></span><span class="hl-red"><span class="bg-red"> </span></span><br>(因環甲膜過小，應改用針刺氣管造口術或經氣管噴射通氣)</td>
+</tr>
+<tr>
+<td><strong>清醒插管神經阻斷<br></strong><span class="hl-red"><strong>[114-1-1]</strong></span></td>
+<td><strong>● </strong><span class="hl-orange"><strong>舌咽神經 (glossalpharyngeal nerve)</strong></span><strong> [口咽] <br></strong>  • 阻斷口咽反射<br><strong>● </strong><span class="hl-orange"><strong>上喉神經 (Superior laryngeal nerve)</strong></span><strong> [喉入口以上)]<br></strong>  • 減少喉反射<br><strong>● </strong><span class="hl-orange"><strong>經喉膜阻斷 (translaryngeal)</strong></span><strong> [聲門下]<br></strong>  • 麻醉聲膜下黏膜感覺<br><strong>⚠️ 考點提醒：<br></strong>  • <span class="hl-red"><span class="bg-red"><strong>不可阻斷喉返神經</strong></span></span>，否則會導致聲門關閉與呼吸道阻塞</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>快速順序插管 (RSI)藥物 (臨床插管多是如此)</strong><span class="hl-red"><strong>[112-1-76]</strong></span><div class="table-wrap"><table>
+<thead><tr>
+<th><strong>藥名</strong></th>
+<th><strong>類別</strong></th>
+<th><strong>副作用與臨床限制</strong></th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="cell-yellow"><span class="hl-red"><strong>Propofol</strong></span></td>
+<td class="cell-yellow">induction agent</td>
+<td class="cell-yellow">● 容易低血壓，但無絕對禁忌症<br>● <span class="hl-red"><span class="bg-red"><strong>禁用於紫質症患者</strong></span></span><br>→ 會造成紫質沉積</td>
+</tr>
+<tr>
+<td class="cell-yellow"><strong>Ketamine<br></strong><em><span class="hl-gray">(急診愛用)<br>(不會掉BP)</span></em></td>
+<td class="cell-yellow">induction agent</td>
+<td class="cell-yellow">● 會增加血壓、心跳、及心輸出，ICP ↑<br>● <strong>不適用於</strong>：頭部外傷及顱內高壓患者</td>
+</tr>
+<tr>
+<td class="cell-yellow"><span class="hl-red"><strong>Midazolam</strong></span><strong><br>(Dormicum)</strong></td>
+<td class="cell-yellow">induction agent</td>
+<td class="cell-yellow">● ICP ↓、呼吸抑制<br>● <strong>不適用於</strong>：<br>  • 孕婦（會影響胎兒）<br>  • COPD <br>  • MG（重症肌無力）患者</td>
+</tr>
+<tr>
+<td class="cell-yellow"><strong>Etomidate</strong></td>
+<td class="cell-yellow">induction agent</td>
+<td class="cell-yellow">● <span class="hl-red"><strong>對於血壓、心跳、呼吸影響小</strong></span><br>● <strong>臨床建議</strong>：<br>  • 外傷性休克病人<br>  • 敗血性休克病人</td>
+</tr>
+<tr>
+<td class="cell-teal"><strong>Succinylcholine</strong></td>
+<td class="cell-teal">neuromuscular blocking agent</td>
+<td class="cell-teal"><strong>● 易造成<br></strong>  • 高血鉀<br>  • 惡性高熱<br>  • 眼壓／ICP ↑<br><span class="hl-red"><span class="bg-red"><strong>● 絕對禁用：<br>  • 腎衰竭<br>  • 燒燙傷<br>  • 惡性高熱病史<br>  • 近期中風（<72 hr）<br>  • 肌肉失養症<br>  • 閉鎖性青光眼</strong></span></span></td>
+</tr>
+<tr>
+<td class="cell-teal"><strong>Rocuronium</strong></td>
+<td class="cell-teal">neuromuscular blocking agent</td>
+<td class="cell-teal">● 需肝腎代謝<br>● <strong>臨床注意</strong>：<br>  • 肝腎功能不佳者需小心使用</td>
+</tr>
+</tbody>
+</table></div>
+</li>
+</ul>
+<div class="section">
+  <div class="section-header">
+    <h3 id="sec-3">急性併發症與 ARDS 呼吸設定</h3>
+    <div class="ref-tags"><span class="ref-tag">114-1-9</span><span class="ref-tag">112-2-9</span><span class="ref-tag">108-1-8</span><span class="ref-tag">108-1-1</span></div>
+  </div>
+  <div class="content">
+<ul>
+<li><strong>喉頭痙攣 (Laryngospasm)</strong>：<ul>
+<li>麻醉深度不足時受分泌物刺激引起之聲帶反射性閉鎖</li>
+</ul>
+<ul>
+<li>處置為移除刺激物、加深麻醉，嚴重時給予短效肌鬆劑 (Succinylcholine)</li>
+</ul>
+<ul>
+<li>嚴重併發症為<span class="hl-purple"><strong>負壓性肺水腫 (Negative-pressure pulmonary edema)</strong></span></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>急性呼吸窘迫症候群 (ARDS)</strong>：<ul>
+<li><strong>柏林定義 (Berlin definition)：</strong>一週內發生的呼吸症狀惡化、雙側肺部浸潤、排除心因性肺水腫、<span class="hl-red"><strong>PaO2/FiO2 ≤ 300</strong></span></li>
+</ul>
+<ul>
+<li><strong>呼吸器設定 (肺保護策略)：</strong><ul>
+<li><span class="hl-blue"><strong>潮氣容積 (Tidal volume) 降至 6 ml/kg</strong></span><span class="hl-blue"> </span>(以預測體重計算)</li>
+</ul>
+<ul>
+<li>維持高原壓 (Plateau pressure) < 30 cmH2O</li>
+</ul>
+<ul>
+<li>給予適當的 PEEP</li>
+</ul>
+<ul>
+<li><span class="hl-red"><span class="bg-yellow"><strong>可允許「允許性高碳酸血症 (Permissive hypercapnia)」</strong></span></span></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="part" id="part-2">
+  <span class="part-num">P2</span>
+  <div><h2>第二部分：麻醉生理與重要監測指標</h2></div>
+</div>
+<div class="section">
+  <div class="section-header">
+    <h3 id="sec-4">脈搏血氧飽和度 (SpO2) 與二氧化碳監測 (EtCO2)</h3>
+    <div class="ref-tags"><span class="ref-tag">114-2-3</span><span class="ref-tag">114-1-3</span><span class="ref-tag">113-2-3</span><span class="ref-tag">113-1-2</span><span class="ref-tag">112-2-3</span><span class="ref-tag">111-1-1</span><span class="ref-tag">110-1-2</span><span class="ref-tag">109-1-2</span></div>
+  </div>
+  <div class="content">
+<div class="table-wrap"><table>
+<thead><tr>
+<th>監測項目</th>
+<th>原理與臨床意義</th>
+<th>異常變化與誤差原因</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>SpO2 (血氧) <br>(Pulse oximeter)<br></strong><span class="hl-red"><strong>[114-1-3]<br>[113-1-2]</strong></span></td>
+<td><strong>● 主要測量</strong><span class="hl-red"><strong>動脈血</strong></span><strong><br>● </strong>利用<strong>氧合血紅蛋白 (02Hb)</strong> 和<strong>去氧血紅蛋白 (de02Hb) </strong>對這兩種光波長的<strong>吸收率不同<br>● 利用光波長吸收率計算 <br></strong>  • 紅光 660 nm<br>  • 紅外光 940 nm<br>● 反映組織血氧狀況，與 PaO2 呈<span class="hl-blue"><strong>非線性關係<br></strong></span>● <span class="hl-red"><strong>可</strong></span>利用波形得知是否<span class="hl-blue"><strong>心律不整<br> ⚠️ </strong></span><strong>考點提醒：</strong><span class="hl-blue"><strong> <br></strong></span><strong>  • </strong><span class="hl-red"><strong>無法</strong></span><strong>監測酸鹼中毒</strong></td>
+<td>● <strong>假性偏高</strong>：一氧化碳中毒 (COHb)<br>● <strong>假性偏低或測不到</strong>：<br>  • 變性血紅素 (MetHb，固定約85%)<br>  • 周邊灌流不良 (休克、低溫)<br>  • 深色指甲油</td>
+</tr>
+<tr>
+<td><strong>EtCO2 (潮氣末二氧化碳)<br></strong><span class="hl-red"><strong>[113-2-3]</strong></span></td>
+<td>● <strong>確認氣管內管位置在氣管內的最準確 / 黃金標準<br></strong>● 正常波形呈高原狀 (Plateau)</td>
+<td>● <strong>突然歸零</strong>：<br>  • 氣管管路脫落<br>  • 誤插食道<br>● <strong>數值急遽下降</strong>：<br>  • 肺栓塞 (血流減少致死腔增加)<br>  • 心搏驟停<br>● <strong>數值上升</strong>：<br>  • 惡性高熱<br>  • 甲狀腺風暴</td>
+</tr>
+</tbody>
+</table></div>
+<div class="section">
+  <div class="section-header">
+    <h3 id="sec-5">血行動力學與其他監測 (CVP, PAWP, SVV, BIS)</h3>
+    <div class="ref-tags"><span class="ref-tag">114-1-7</span><span class="ref-tag">114-1-2</span><span class="ref-tag">113-2-2</span><span class="ref-tag">112-2-2</span><span class="ref-tag">111-2-2</span><span class="ref-tag">111-1-2</span><span class="ref-tag">109-2-3</span><span class="ref-tag">109-2-2</span><span class="ref-tag">108-1-2</span></div>
+  </div>
+  <div class="content">
+<ul>
+<li><strong>肺動脈導管 (Swan-Ganz)</strong>：測得的肺動脈楔壓 (PAWP/PCWP) 最接近<strong>左心室舒張末期壓力 (LVEDP)</strong>，用於評估左心前負荷</li>
+</ul>
+<ul>
+<li><strong>動態指標 (SVV / PPV)</strong>：<ul>
+<li>中型以上手術評估血管內容積反應性 (Fluid responsiveness) 優於靜態指標 (CVP)</li>
+</ul>
+<ul>
+<li>在正壓呼吸下測量最準</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>靜脈血氧飽和度 (SvO2)</strong>：<ul>
+<li>正常約 70-75%，測量全身氧氣供需平衡。敗血症、氰化物中毒會使 SvO2 <strong>上升</strong> (組織無法利用氧氣)</li>
+</ul>
+<ul>
+<li>發燒、疼痛、心輸出量下降會使 SvO2 <strong>下降</strong> (氧氣消耗大)</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>腦波與麻醉深度監測 (BIS / EEG)</strong>：<ul>
+<li><strong>大腦的波形變化符合以下：</strong><ul>
+<li><strong>大腦越忙碌（清醒、思考）</strong>：大腦皮質細胞各忙各的，電波互相抵消 → <span class="hl-blue"><strong>高頻率、低振幅</strong></span></li>
+</ul>
+<ul>
+<li><strong>大腦越休息（沉睡、受損）</strong>：大腦皮質細胞失去獨立功能，開始同步化集體放電 → <span class="hl-blue"><strong>低頻率、高振幅</strong></span></li>
+</ul>
+<ul>
+<li>將腦波按意識由<strong>清醒 到 深睡/受損</strong>的順序排列，<span class="hl-blue"><strong>即為：</strong></span><span class="hl-blue"><code class="formula-inline">γ→β→α→θ→δ</code></span></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>頻率數字的記法：</strong>以「4」為基準跳躍, 最大30 (0-4, 4-8, 8-12, 12-30, >30)</li>
+</ul>
+<div class="callout tip"><span class="callout-icon">💡</span><div class="callout-body"><strong><strong>基礎知識-腦波特徵與生理狀態對照表</strong></strong></div></div>
+<div class="table-wrap"><table>
+<thead><tr>
+<th><strong>腦波類型</strong></th>
+<th><strong>頻率範圍</strong></th>
+<th><strong>臨床生理與麻醉狀態描述</strong></th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code class="formula-inline">γ</code><strong>波<br></strong><span class="hl-blue"><strong>[深度思考]</strong></span></td>
+<td>>30 Hz</td>
+<td>● 大腦高度活躍、進行深度思考狀態</td>
+</tr>
+<tr>
+<td><code class="formula-inline">β</code><strong>波<br></strong><span class="hl-blue"><strong>[日常清醒]</strong></span></td>
+<td>12-30 Hz</td>
+<td>● 清醒專注狀態<br>● 輕度鎮靜或<strong>麻醉</strong><span class="hl-blue"><strong>誘導期</strong></span><br>● <strong>麻醉</strong><span class="hl-blue"><strong>恢復期</strong></span><br>（由深層慢波轉回快節律）</td>
+</tr>
+<tr>
+<td><code class="formula-inline">α</code><strong>波<br></strong><span class="hl-blue"><strong>[閉眼放鬆]</strong></span></td>
+<td>8-12 Hz</td>
+<td>● 閉眼放鬆休息狀態<br>● <span class="hl-red"><strong>常規</strong></span><strong>全身麻醉狀態</strong><br>● 麻醉恢復期活性增加</td>
+</tr>
+<tr>
+<td><code class="formula-inline">θ</code><strong>波<br></strong><span class="hl-blue"><strong>[麻醉/淺睡]</strong></span></td>
+<td>4-8 Hz</td>
+<td>● 淺層睡眠狀態<br>● <span class="hl-red"><strong>常規</strong></span><strong>麻醉狀態</strong><br>● 植物人狀態之廣泛慢化表現</td>
+</tr>
+<tr>
+<td><code class="formula-inline">δ</code><strong>波<br></strong><span class="hl-blue"><strong>[深層壓抑]</strong></span></td>
+<td>0-4 Hz</td>
+<td>● 深度睡眠狀態（慢波睡眠）<br>● <span class="hl-red"><strong>深層</strong></span><strong>全身麻醉狀態</strong><br>● 大腦損傷、癲癇發作<br>● 植物人狀態之廣泛慢化表現</td>
+</tr>
+</tbody>
+</table></div>
+<div class="callout tip"><span class="callout-icon">💡</span><div class="callout-body"><strong><strong>麻醉深度、意識障礙與 BIS 臨床監測表 </strong><span class="hl-red"><strong></strong></span></strong><div class="ref-tags"><span class="ref-tag">114-1-7</span><span class="ref-tag">114-1-2</span><span class="ref-tag">113-2-2</span></div></div></div>
+<div class="table-wrap"><table>
+<thead><tr>
+<th><strong>意識與麻醉狀態</strong></th>
+<th><strong>BIS 數值範圍</strong></th>
+<th><strong>腦波型態特徵</strong></th>
+<th><strong>藥物反應與臨床要點</strong></th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>完全清醒</strong></td>
+<td><span class="hl-blue"><strong>100</strong></span></td>
+<td>● 高頻低振幅<br>（<code class="formula-inline">γ,β</code> 波為主）</td>
+<td>● 大腦皮質電氣活動完全正常</td>
+</tr>
+<tr>
+<td><strong>鎮靜狀態</strong></td>
+<td>65 - 85</td>
+<td>● 逐漸出現 <code class="formula-inline">β</code> 波與輕度慢化</td>
+<td>● 臨床施予輕度鎮靜藥物之表現</td>
+</tr>
+<tr>
+<td><strong>全身麻醉最佳深度</strong></td>
+<td><span class="hl-red"><span class="bg-yellow"><strong>40 - 60/65</strong></span></span></td>
+<td>● 低頻高振幅<br>（<code class="formula-inline">δ,θ</code> 波為主）<br>● 產生記憶機率低<br>● 對語言刺激無反應</td>
+<td>● 由常規 GABAergic 藥物驅動<br>  • <span class="hl-teal"><strong>Propofol</strong></span><strong> → </strong><span class="hl-blue"><span class="bg-yellow"><strong>典型呈現低頻高振幅波</strong></span></span><br>  • 吸入性麻醉劑<br>  • Barbiturates<br>  • Etomidate</td>
+</tr>
+<tr>
+<td><strong>深層麻醉至腦損傷</strong></td>
+<td>0 - 40</td>
+<td>● <span class="hl-orange"><strong>爆發抑制 <br>(Burst suppression)</strong></span><br>● <span class="hl-orange"><strong>等電位<br>(Isoelectricity/ 平波)</strong></span></td>
+<td>● 隨著麻醉加深<br>→ 腦波會先出現突發性爆發<br>→ 靜止（爆發抑制）<br>● 大腦皮質完全喪失電氣活動（平波）</td>
+</tr>
+<tr>
+<td><strong>特殊藥物例外狀況</strong></td>
+<td>無法以常規<br>BIS 準確評估</td>
+<td>● <span class="hl-red"><strong>不出現</strong></span><strong>典型慢波</strong><br>● 呈現<span class="hl-blue"><strong>高頻波</strong></span>（<code class="formula-inline">γ,β</code>）或<span class="hl-orange"><strong>睡眠紡錘波（</strong></span><span class="hl-orange"><code class="formula-inline">α−β</code></span><span class="hl-orange"><strong>）</strong></span></td>
+<td>● <strong>關鍵特殊藥物</strong>：<br>  • <span class="hl-teal"><strong>Ketamine</strong></span><br>  • <span class="hl-teal"><strong>Nitrous oxide (</strong></span><span class="hl-teal"><code class="formula-inline">N2​O</code></span><span class="hl-teal"><strong>)</strong></span><br>  • <span class="hl-teal"><strong>Dexmedetomidine</strong></span><br><strong>● 臨床特點：<br></strong>  • 此類藥物會使 BIS 監測<span class="hl-red"><strong>失準</strong></span><br>  • 患者已失去意識<br>      ◦ 但 <strong>BIS 數值仍維持</strong><span class="hl-red"><strong>異常偏高</strong></span></td>
+</tr>
+<tr>
+<td><strong>麻醉恢復期</strong></td>
+<td>數值逐漸回升</td>
+<td>● 慢波轉向快節律</td>
+<td>● 臨床表現：<br>  • <code class="formula-inline">α</code> 與 <code class="formula-inline">β</code> 活性增加</td>
+</tr>
+</tbody>
+</table></div>
+<div class="callout tip"><span class="callout-icon">💡</span><div class="callout-body"><strong><strong>正常睡眠與異常意識狀態腦波對照表</strong></strong></div></div>
+<div class="table-wrap"><table>
+<thead><tr>
+<th><strong>狀態分類</strong></th>
+<th><strong>具體腦波型態與關鍵標誌</strong></th>
+<th><strong>臨床診斷與鑑別要點</strong></th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>非快速動眼期 N1</strong></td>
+<td>● <code class="formula-inline">α</code> 波減少，出現緩慢的 <code class="formula-inline">θ</code> 波</td>
+<td>● 屬於由清醒進入睡眠的過渡階段</td>
+</tr>
+<tr>
+<td><strong>非快速動眼期 N2</strong></td>
+<td>● <strong>睡眠紡錘波 (Sleep spindle, 12-15 Hz)</strong><br>● <strong>K 複合波 (K-complex)</strong></td>
+<td>● 此兩項為 N2 階段最具特異性的腦波標誌</td>
+</tr>
+<tr>
+<td><strong>非快速動眼期 N3</strong></td>
+<td>● 高振幅 <code class="formula-inline">δ</code> 波為主</td>
+<td>● 亦稱為慢波睡眠 (Slow-wave sleep)</td>
+</tr>
+<tr>
+<td><strong>快速動眼期 (REM)</strong></td>
+<td>● 低振幅、混合頻率之腦波<br>（外觀類似清醒波）</td>
+<td>● 臨床特徵：伴隨肌張力完全抑制、眼球快速運動<br>● 與 NREM 以 90-110 分鐘為週期交替運作</td>
+</tr>
+<tr>
+<td><strong>植物人狀態 (VS)</strong></td>
+<td>● 廣泛性慢化 (Generalized slowing)<br>● 以低振幅混合慢波 (<code class="formula-inline">θ/δ↑</code>) 為主</td>
+<td>● <strong>重要鑑別點</strong>：<br>  • 外觀與正常睡眠截圖不同<br>  • <strong>絕對不會出現</strong>正常睡眠必備的睡眠紡錘波與 K 複合波<br>● 嚴重者可見間歇性不連續，甚至接近爆發抑制型態</td>
+</tr>
+<tr>
+<td><strong>腦死狀態</strong></td>
+<td>● 等電位狀態 (Isoelectric line / Flat EEG)</td>
+<td>● 定義為大腦皮質與腦幹完全喪失電氣活動</td>
+</tr>
+</tbody>
+</table></div>
+</li>
+</ul>
+<div class="section">
+  <div class="section-header">
+    <h3 id="sec-6">體溫調節與低體溫 (Hypothermia)</h3>
+    <div class="ref-tags"><span class="ref-tag">112-1-2</span><span class="ref-tag">111-1-3</span><span class="ref-tag">108-2-1</span></div>
+  </div>
+  <div class="content">
+<ul>
+<li>麻醉中最常見的體溫異常為<span class="hl-blue"><strong>低體溫 (Hypothermia)</strong></span></li>
+</ul>
+<ul>
+<li><strong>體溫下降三階段：</strong><ol>
+<li><strong>體溫重新分布 (Redistribution)</strong>：<ol>
+<li>麻醉後<span class="hl-red"><strong>第 1 小時下降最快 (1-2°C)</strong></span></li>
+</ol>
+<ol>
+<li>因麻醉藥導致<strong>血管舒張</strong>，核心高溫血液流向周邊冷組織</li>
+</ol>
+<ol>
+<li><span class="hl-teal"><strong>預熱 (Pre-warming) 可有效預防</strong></span></li>
+</ol>
+</li>
+</ol>
+<ol>
+<li><strong>熱量散失：</strong>後續 2-4 小時穩定下降</li>
+</ol>
+<ol>
+<li><strong>平衡期</strong></li>
+</ol>
+</li>
+</ul>
+<div class="section">
+  <div class="section-header">
+    <h3 id="sec-7">Aldrete score (麻醉後復甦評分)</h3>
+    <div class="ref-tags"><span class="ref-tag">114-1-6</span></div>
+  </div>
+  <div class="content">
+<div class="table-wrap"><table>
+<thead><tr>
+<th><strong>評分</strong></th>
+<th><strong>活動 (Activity)</strong></th>
+<th><strong>呼吸 (Respiration)</strong></th>
+<th><strong>循環 (Circulation)</strong></th>
+<th><strong>意識 (Consciousness)</strong></th>
+<th><strong>血氧飽和 (Oxygen Saturation)</strong></th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>2</strong></td>
+<td>自願或按指令移動四肢</td>
+<td>呼吸深沉，可自由咳嗽</td>
+<td>血壓在麻醉前水平的 ±20 mmHg 範圍內</td>
+<td>完全清醒</td>
+<td>Room air，血氧飽和度 (SpO₂) > 92%</td>
+</tr>
+<tr>
+<td><strong>1</strong></td>
+<td>移動兩肢</td>
+<td>呼吸困難、淺快或受限呼吸</td>
+<td>血壓在麻醉前水平的 ±20-50% 範圍內</td>
+<td>可被呼喚喚醒</td>
+<td>需要額外供氧以維持 SpO₂ > 90%</td>
+</tr>
+<tr>
+<td><strong>0</strong></td>
+<td>無法移動四肢</td>
+<td>呼吸暫停 (Apneic)</td>
+<td>血壓在麻醉前水平的 ±50% 範圍外</td>
+<td>無反應</td>
+<td>給予氧氣後，SpO₂ < 92%</td>
+</tr>
+</tbody>
+</table></div>
+<div class="part" id="part-3">
+  <span class="part-num">P3</span>
+  <div><h2>第三部分：靜脈與吸入性麻醉藥物</h2></div>
+</div>
+<div class="section">
+  <div class="section-header">
+    <h3 id="sec-8">常見靜脈麻醉藥 (Intravenous Anesthetics)</h3>
+    <div class="ref-tags"><span class="ref-tag">112-1-76</span><span class="ref-tag">112-1-5</span><span class="ref-tag">111-2-5</span><span class="ref-tag">109-2-5</span><span class="ref-tag">108-2-4</span></div>
+  </div>
+  <div class="content">
+<div class="table-wrap"><table>
+<thead><tr>
+<th>藥物名稱</th>
+<th>作用機轉與心血管/腦部影響</th>
+<th>臨床特色與副作用</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>Propofol (牛奶針)<br></strong><span class="hl-red"><strong>[112-1-76]</strong></span></td>
+<td>● 促進 GABAA 受體<br>● <strong>降腦壓、降血壓、抑制呼吸</strong></td>
+<td>● <span class="hl-red"><span class="bg-yellow"><strong>誘導最常用</strong></span></span><br>● 有止吐效果 (防 PONV)<br>● <strong>副作用：<br>  • </strong>注射痛<br>  • <span class="hl-purple"><strong>掉血壓 (除了</strong></span><span class="hl-teal"><strong>Thiopental</strong></span><span class="hl-purple"><strong>其他幾個不會)</strong></span><br>  • <span class="hl-purple"><strong>Propofol 輸注症候群 (PRIS，代謝性酸中毒)</strong></span><br>● 由於大豆/蛋黃成分，易受細菌汙染</td>
+</tr>
+<tr>
+<td><span class="hl-red"><strong>Ketamine<br>[112-1-5]</strong></span></td>
+<td>● <strong>NMDA 受體拮抗劑<br></strong>● <span class="hl-red"><span class="bg-yellow"><strong>升腦壓、升血壓、升心跳</strong></span></span></td>
+<td>● <strong>具有支氣管擴張效果</strong>，為<span class="hl-teal"><span class="bg-yellow"><strong>氣喘病患誘發首選</strong></span></span><br>● 產生解離性麻醉 (Dissociative anesthesia)<br>● <strong>副作用：</strong>幻覺、惡夢、增加唾液分泌</td>
+</tr>
+<tr>
+<td><strong>Etomidate</strong></td>
+<td>● 促進 GABAA 受體<br>● <strong>降腦壓，但</strong><span class="hl-red"><span class="bg-yellow"><strong>血行動力學最穩定</strong></span></span></td>
+<td>● <span class="hl-red"><strong>不會呼吸抑制 (Ketamine也不會其他都會)</strong></span><br>● 適合血壓不穩、休克、嚴重缺血性心臟病患者<br>● <strong>副作用：<br>  • </strong><span class="hl-purple"><strong>抑制腎上腺皮質功能 (降低 Cortisol)</strong></span></td>
+</tr>
+<tr>
+<td><strong>Midazolam (BZD類)</strong></td>
+<td>● 促進 GABAA 受體</td>
+<td>● 產生<span class="hl-blue"><strong>順向失憶</strong></span><br>● <span class="hl-teal"><strong>專一性解毒劑為 Flumazenil</strong></span></td>
+</tr>
+<tr>
+<td><strong>Barbiturate類<br>  • </strong><span class="hl-teal"><strong>Thiopental</strong></span></td>
+<td>● 促進 GABAA 受體<br>● <strong>降腦壓、升心跳</strong></td>
+<td>● 適合幼兒的麻醉劑</td>
+</tr>
+</tbody>
+</table></div>
+<div class="section">
+  <div class="section-header">
+    <h3 id="sec-9">吸入性麻醉藥 (Inhalational Anesthetics)</h3>
+    <div class="ref-tags"><span class="ref-tag">113-2-5</span><span class="ref-tag">109-2-4</span><span class="ref-tag">108-1-3</span></div>
+  </div>
+  <div class="content">
+<p><strong>MAC 核心定義與藥效原理</strong></p>
+<ul>
+<li><strong>最低肺泡濃度 (MAC) 之定義</strong><ul>
+<li><strong>定義：</strong><ul>
+<li>在對 <strong>50%</strong> 的患者施加有害刺激時，能抑制其產生主動意向運動所需的最低肺泡（呼氣末）麻醉藥濃度</li>
+</ul>
+<ul>
+<li>用以衡量吸入性麻醉藥的<strong>效力 (Potency)</strong>。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>梅耶-歐佛頓假說 (Meyer-Overton hypothesis)：</strong><ul>
+<li>吸入性麻醉劑的<strong>脂溶性越高</strong>，穿透細胞膜能力越強，其<strong>麻醉效力越強</strong></li>
+</ul>
+<ul>
+<li>藥物效力的對數值與脂溶性呈正比例線性關係</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>影響 MAC 的臨床變數與修正</strong><ul>
+<li><strong>年齡定量規律：</strong>隨著年齡增長，<strong>每增加十歲，MAC 值會降低約 6-7%</strong>（即高齡患者所需藥量減少）</li>
+</ul>
+<ul>
+<li><strong>調降 MAC 因子（患者對藥物敏感度增加，需減少藥量）：</strong><ul>
+<li>生理與疾病：年紀大、低體溫、嚴重低血壓、孕婦、<strong>貧血</strong>、甲狀腺功能低下</li>
+</ul>
+<ul>
+<li>藥物交互作用：<span class="hl-red"><strong>急性</strong></span><strong>酒精中毒</strong>、<span class="hl-red"><strong>長期</strong></span><strong>使用安非他命者</strong></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>調升 MAC 因子（患者對藥物耐受度增加，需增加藥量）：</strong><ul>
+<li>生理與疾病：年紀小（嬰兒）、高體溫（發燒）、甲狀腺功能亢進</li>
+</ul>
+<ul>
+<li>藥物交互作用：<span class="hl-red"><strong>慢性</strong></span><strong>酒精濫用者</strong>、<span class="hl-red"><strong>急性</strong></span><strong>安非他命中毒</strong></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>不影響 MAC 的因子：</strong> 麻醉時間長短、性別、身高、體重、高血壓疾病本身</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>血液/氣體分配係數 (B/G ratio)</strong>：<ul>
+<li>決定麻醉<span class="hl-blue"><strong>「誘導與恢復的快慢」</strong></span></li>
+</ul>
+<ul>
+<li>B/G 越小，代表越不易溶於血，<strong>誘導與甦醒</strong><span class="hl-red"><strong>越快</strong></span></li>
+</ul>
+</li>
+</ul>
+<p><strong>臨床生理效應與常見氣體特徵</strong></p>
+<ul>
+<li><strong>血流動力學效應</strong><ul>
+<li>通則：絕大多數吸入性麻醉劑皆會<strong>放鬆血管平滑肌</strong>，進而引發全身血管舒張與心輸出量調控改變，臨床表現為<strong>低血壓</strong></li>
+</ul>
+<ul>
+<li>例外：<strong>一氧化二氮 (</strong><code class="formula-inline">N2​O</code><strong>)</strong> 對心血管系統的平滑肌與交神經平衡影響最小，<span class="hl-red"><strong>較不易</strong></span><strong>引起低血壓</strong></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>高頻核心氣體特徵對照</strong><ul>
+<li><strong>Desflurane (水溶性低→穩定)</strong><ul>
+<li>優點：血液／氣體分配係數（B/G ratio）最小（0.42），體內吸入與排泄最快，<span class="hl-red"><span class="bg-yellow"><strong>臨床誘導與甦醒最快</strong></span></span></li>
+</ul>
+<ul>
+<li>缺點：具<span class="hl-red"><strong>具強烈刺激性</strong></span>，易誘發氣管痙攣與咳嗽，臨床上<span class="hl-red"><strong>不適合</strong></span><strong>作為孩童的吸入式麻醉誘導</strong></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>Sevoflurane (水溶性低→穩定)</strong><ul>
+<li>優點：氣味無刺激性，<span class="hl-teal"><span class="bg-yellow"><strong>臨床最常規用於孩童的吸入式麻醉誘導</strong></span></span></li>
+</ul>
+<ul>
+<li>缺點：與呼吸器內二氧化碳吸收劑（鹼石灰）作用後，易產生具<span class="hl-orange"><strong>腎毒性之產物 Compound A</strong></span></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>Nitrous Oxide (</strong><code class="formula-inline">N2​O</code><strong> / 笑氣)</strong><ul>
+<li>特點：MAC 最大（>100%），代表其<strong>麻醉效力最弱</strong>，無法單獨維持常規全麻</li>
+</ul>
+<ul>
+<li><span class="hl-red"><span class="bg-red"><strong>禁忌：</strong></span></span><ul>
+<li>具有高度組織穿透與擴散力，會<span class="hl-blue"><strong>擴張體內封閉腔室</strong></span></li>
+</ul>
+<ul>
+<li><span class="hl-red"><span class="bg-red"><strong>臨床上腸阻塞、氣胸、氣腦症、中耳手術患者絕對禁用</strong></span></span></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>低流量麻醉 (Low-flow Anesthesia) 臨床實務</strong></p>
+<ul>
+<li><strong>定義與臨床定位</strong><ul>
+<li>定義：在建立穩定麻醉深度後，將呼吸器的新鮮氣體流量（Fresh Gas Flow）調降至每分鐘 <strong>0.5-1 L/min</strong> 的操作方式</li>
+</ul>
+<ul>
+<li>優點：大幅減少麻醉氣體的消耗與浪費、具備高度經濟效益、並能顯著降低手術室對外環境的麻醉廢氣污染</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>物理限制與麻醉劑選擇選擇（詳解脈絡補足）</strong><ul>
+<li>迴路風險：因新鮮氣體輸入量少，系統屬於半封閉狀態，必須嚴密監測有毒氣體（如 <code class="formula-inline">CO2​</code>）在呼吸迴路內的蓄積</li>
+</ul>
+<ul>
+<li>氣體溶解度之關鍵鑑別：<ul>
+<li><strong>水溶解度高（如 Isoflurane）</strong>：氣體易溶解於迴路內的冷凝水或組織水分中，在低流量狀態下，其肺泡與血液間的濃度平衡極難建立，<strong>不易穩定維持臨床所需的麻醉濃度</strong></li>
+</ul>
+<ul>
+<li><strong>水溶解度低（如 Desflurane、Sevoflurane）</strong>：幾乎不溶於水，濃度不會被迴路水分稀釋，在低流量環境下仍能精準且快速地調整並<strong>維持穩定的體內麻醉濃度</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="part" id="part-4">
+  <span class="part-num">P4</span>
+  <div><h2>第四部分：肌肉鬆弛劑、局部麻醉藥與疼痛管理</h2></div>
+</div>
+<div class="section">
+  <div class="section-header">
+    <h3 id="sec-10">肌肉鬆弛劑 (NMBDs) 與 術後監測</h3>
+    <div class="ref-tags"><span class="ref-tag">114-2-5</span><span class="ref-tag">114-2-2</span><span class="ref-tag">113-2-4</span><span class="ref-tag">113-1-4</span><span class="ref-tag">113-1-3</span><span class="ref-tag">109-2-6</span><span class="ref-tag">108-2-8</span><span class="ref-tag">108-2-5</span></div>
+  </div>
+  <div class="content">
+<p><strong>肌肉鬆弛劑 (NMBDs)分類藥物及副作用重點 <span class="hl-red">[114-2-5][114-2-2][113-2-4][113-1-4][113-1-3]</span></strong></p>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>分類與藥物</th>
+<th>特色與代謝途徑</th>
+<th>副作用與重要考點</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>去極化型<br>  • </strong><span class="hl-teal"><strong>Succinylcholine</strong></span></td>
+<td>● <span class="hl-red"><strong>非</strong></span>競爭型強效Ach-R agonist<br>● <strong>作用極</strong><span class="hl-red"><strong>快</strong></span>，<span class="hl-blue"><strong>適合 RSI (快速順序插管)</strong></span><br>● 透過血漿假性膽鹼酯酶代謝</td>
+<td>● <strong>副作用</strong><span class="hl-red"><strong>極多</strong></span>：<br>  • 高血鉀<br>  • 惡性高熱 (MH)<br>  • 眼壓/腦壓上升<br>  • 肌肉束顫 (Fasciculation)<br>● <strong>禁忌症</strong>：<br>  • 大面積燒傷<br>  • 神經損傷臥床<br>  • 惡性高熱病史<br><strong>⚠️ 考點提醒：<br></strong>  • <strong>肌鬆劑本身</strong><span class="hl-red"><strong>完全沒有</strong></span><strong>止痛與鎮靜效果</strong></td>
+</tr>
+<tr>
+<td><strong>非去極化型 [-curium]<br>[Benzylisoquinoline]<br>  • </strong><span class="hl-teal"><strong>Cisatra</strong></span><span class="hl-teal"><strong>curium</strong></span></td>
+<td>● 競爭型與Ach競爭結合位(antagonist)<br>● 透過 <span class="hl-orange"><strong>Hofmann elimination (霍夫曼代謝)</strong></span><strong><br>→ </strong>自然在血漿中降解</td>
+<td>● <span class="hl-teal"><strong>肝腎功能衰竭病患的首選肌鬆劑<br></strong></span>● <span class="hl-red"><strong>無法使用</strong></span><strong>Sugammadex解毒</strong></td>
+</tr>
+<tr>
+<td><strong>非去極化型 [-ronium]<br>[Aminosteroid]<br>  • </strong><span class="hl-teal"><strong>Rocu</strong></span><span class="hl-teal"><strong>ronium</strong></span><br>  • <span class="hl-teal"><strong>Vecu</strong></span><span class="hl-teal"><strong>ronium</strong></span></td>
+<td>● 競爭型與Ach競爭結合位(antagonist)<br>● 肝臟/膽汁代謝為主</td>
+<td>● <strong>專一性拮抗劑(解毒)：</strong><span class="hl-teal"><strong>Sugammadex</strong></span> <br>  • <strong>僅限用於Amino-steroidal類 </strong>肌肉鬆弛劑<br>(透過直接包裹藥物分子使其失效，非常迅速安全)</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>術後殘留肌肉神經阻斷與逆轉處置要點 <span class="hl-red">[113-1-3]</span></strong></p>
+<ul>
+<li><strong>麻醉策略與殘留風險比較</strong><ul>
+<li>使用<span class="hl-teal"><strong>吸入性氣體麻醉</strong></span>相較於靜脈麻醉（TIVA），<span class="hl-red"><strong>更容易</strong></span><strong>增加術後殘留肌肉神經阻斷的風險</strong>（因氣體麻醉劑本身具有協同放鬆肌肉的作用），此現象在高齡患者尤為顯著</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>膽鹼酯酶抑制劑 (</strong><span class="hl-teal"><strong>Neostigmine</strong></span><strong>) 使用時機</strong><ul>
+<li><strong>藥理機轉：</strong>藉由抑制乙醯膽鹼酯酶，增加神經肌肉交界處的 Acetylcholine 濃度，以競爭對抗<span class="hl-teal"><strong>非去極化肌肉鬆弛劑</strong></span></li>
+</ul>
+<ul>
+<li><strong>臨床重點：</strong><ul>
+<li><span class="hl-red"><span class="bg-yellow"><strong>必須在病人已有自發性呼吸跡象或肌肉功能開始有一定程度恢復時方可給藥</strong></span></span></li>
+</ul>
+<ul>
+<li>若在完全沒有自發恢復的情況下過早給予，易導致藥物持續蓄積或引發再阻滯 (Recurarization)，導致術後嚴重肌肉無力</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>Sugammadex 緊急逆轉應用限制</strong><ul>
+<li>臨床應用：常用於氣管插管通氣失敗時的緊急逆轉 (Emergency reversal)。</li>
+</ul>
+<div class="callout warn"><span class="callout-icon">⚠️</span><div class="callout-body"><strong>考點提醒：</strong><strong></strong><ul>
+<li>僅能逆轉 Rocuronium 與 Vecuronium</li>
+</ul>
+<ul>
+<li><span class="hl-red"><span class="bg-red"><strong>若臨床插管使用的是 Cisatracurium 或去極化型的 Succinylcholine，Sugammadex 完全無效</strong></span></span></li>
+</ul>
+</div></div>
+</li>
+</ul>
+<ul>
+<li><strong>四聯刺激 (Train-of-Four, TOF)</strong>：評估肌鬆劑恢復程度<ul>
+<li><span class="hl-blue"><strong>TOF Ratio = 第四下收縮振幅 / 第一下收縮振幅 (測量內收拇指肌)</strong></span></li>
+</ul>
+<ul>
+<li><strong>拔管標準：</strong><span class="hl-red"><strong>TOF ratio ≥ 0.9</strong></span>，確保呼吸道反射與肌肉力量恢復，減少術後殘餘無力風險</li>
+</ul>
+<ul>
+<li>臨床效益：此數值為臨床安全拔管的客觀指標，可顯著<strong>降低</strong>術後缺氧、呼吸道阻塞及延長住院的風險</li>
+</ul>
+</li>
+</ul>
+<div class="section">
+  <div class="section-header">
+    <h3 id="sec-11">局部麻醉藥 (Local Anesthetics) 與 LAST</h3>
+    <div class="ref-tags"><span class="ref-tag">112-2-4</span><span class="ref-tag">111-1-4</span><span class="ref-tag">110-2-5</span><span class="ref-tag">110-1-7</span><span class="ref-tag">110-1-4</span><span class="ref-tag">108-2-3</span></div>
+  </div>
+  <div class="content">
+<ul>
+<li>機轉：阻斷神經細胞膜上的<strong>電位門控鈉離子通道 (Voltage-gated Na+ channels)</strong></li>
+</ul>
+<ul>
+<li><strong>局部麻醉藥物分類：</strong><ul>
+<li><strong>醯胺類 (Amides)</strong>：<ul>
+<li>字尾含兩個 "i" (如 L<strong>i</strong>doca<strong>i</strong>ne, Bup<strong>i</strong>vaca<strong>i</strong>ne)</li>
+</ul>
+<ul>
+<li>由<strong>肝臟</strong>代謝，較不易過敏</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>酯類 (Esters)</strong>：<ul>
+<li>字尾只有一個 "i" (如 Procaine)</li>
+</ul>
+<ul>
+<li>由血液中偽膽鹼酯酶代謝，代謝快但較易引發過敏 (因代謝物 PABA)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>添加 Epinephrine 的好處：使局部血管收縮，減少藥物吸收入血，<span class="hl-blue"><strong>延長麻醉作用時間</strong></span>，並減少全身毒性</li>
+</ul>
+<ul>
+<li><strong>局部麻醉藥全身性毒性 (LAST)</strong>：<ul>
+<li><strong>症狀進展：</strong><span class="hl-blue"><strong>先出現</strong></span><span class="hl-purple"><strong>中樞神經 (CNS) 毒性</strong></span> (嘴唇發麻、耳鳴、金屬味、痙攣/Seizure) → <span class="hl-blue"><strong>晚期</strong></span><span class="hl-purple"><strong>出現心血管 (CVS) 毒性</strong></span> (心律不整、心室頻脈、心搏暫停)</li>
+</ul>
+<ul>
+<li><strong>急救特效藥：</strong><span class="hl-teal"><strong>Intralipid (Lipid emulsion，脂質乳劑)</strong></span>，作為「脂質沈船效應」吸附藥物</li>
+</ul>
+</li>
+</ul>
+<div class="section">
+  <div class="section-header">
+    <h3 id="sec-12">疼痛管理與鴉片類藥物 (Opioids)</h3>
+    <div class="ref-tags"><span class="ref-tag">114-1-8</span><span class="ref-tag">113-2-8</span><span class="ref-tag">112-2-8</span><span class="ref-tag">112-2-5</span><span class="ref-tag">112-1-4</span><span class="ref-tag">109-2-8</span><span class="ref-tag">109-1-5</span><span class="ref-tag">108-1-7</span><span class="ref-tag">108-1-6</span></div>
+  </div>
+  <div class="content">
+<ul>
+<li><strong>疼痛名詞定義：</strong><span class="hl-red"><strong>[113-2-8]</strong></span><ul>
+<li><strong>Allodynia (痛覺超敏)</strong>：對原本不該感到痛的刺激 (如輕觸) 感到疼痛</li>
+</ul>
+<ul>
+<li><strong>Hyperalgesia (痛覺過敏)</strong>：對疼痛刺激的反應不正常地上升</li>
+</ul>
+<ul>
+<li><strong>理解：</strong><ul>
+<li>-dynia → 對<span class="hl-blue"><strong>不應該感到痛的刺激</strong></span>感到痛</li>
+</ul>
+<ul>
+<li>-algesia → 對<span class="hl-blue"><strong>會感到痛的刺激</strong></span>感到程度差異 (An-, Hyper-, Hypo-)</li>
+</ul>
+<ul>
+<li>-esthesia → 對<span class="hl-blue"><strong>所有刺激</strong></span>感到程度差異</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>鴉片類藥物機轉：</strong><ul>
+<li>結合 Mu, Kappa, Delta 受體 (G-protein coupled) → 抑制腺苷酸環化酶 → 促進鉀離子外流 (細胞過極化) / 抑制鈣離子內流</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>副作用：</strong><ul>
+<li>呼吸抑制、噁心嘔吐、便秘、縮瞳</li>
+</ul>
+<ul>
+<li>大劑量快速給予 Fentanyl 等強效藥物會引發<strong>胸壁僵硬 (Chest wall rigidity)</strong>，影響通氣</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>解毒劑：</strong><span class="hl-teal"><strong>Naloxone</strong></span> (純 Mu 受體拮抗劑)</li>
+</ul>
+<ul>
+<li><strong>病患自控式止痛 (PCA)：</strong><ul>
+<li>主要使用 Opioids (如 Morphine, Fentanyl)</li>
+</ul>
+<ul>
+<li>病患需意識清楚能配合按鈕</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>癌症疼痛：</strong><ul>
+<li>長效控制常使用口服或皮下/經皮吸收 (如 Fentanyl patch)</li>
+</ul>
+<ul>
+<li><strong>Meperidine</strong> 因其代謝物會累積引發神經毒性與癲癇，<span class="hl-red"><span class="bg-red"><strong>不建議用於慢性或癌症疼痛的長期控制</strong></span></span></li>
+</ul>
+</li>
+</ul>
+<div class="part" id="part-5">
+  <span class="part-num">P5</span>
+  <div><h2>第五部分：區域麻醉、特殊病患與併發症</h2></div>
+</div>
+<div class="section">
+  <div class="section-header">
+    <h3 id="sec-13">脊椎麻醉 (Spinal) 與硬脊膜外麻醉 (Epidural)</h3>
+    <div class="ref-tags"><span class="ref-tag">114-1-5</span><span class="ref-tag">114-1-4</span><span class="ref-tag">113-2-6</span><span class="ref-tag">113-1-5</span><span class="ref-tag">112-2-7</span><span class="ref-tag">112-1-7</span><span class="ref-tag">111-1-8</span><span class="ref-tag">110-2-8</span><span class="ref-tag">110-2-6</span></div>
+  </div>
+  <div class="content">
+<div class="callout tip"><span class="callout-icon">💡</span><div class="callout-body"><strong><strong>脊椎麻醉常用麻醉劑(Local & IV) </strong><span class="hl-red"><strong></strong></span></strong><div class="ref-tags"><span class="ref-tag">113-1-5</span></div></div></div>
+<div class="callout tip"><span class="callout-icon">💡</span><div class="callout-body"><strong><strong>脊椎麻醉和硬脊膜外麻醉的比較及重點整理 </strong><span class="hl-red"><strong></strong></span></strong><div class="ref-tags"><span class="ref-tag">114-1-5</span><span class="ref-tag">114-1-4</span><span class="ref-tag">113-2-6</span></div></div></div>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>特性比較</th>
+<th>脊椎麻醉 (Spinal Anesthesia)</th>
+<th>硬脊膜外麻醉 (Epidural Anesthesia)</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>注射位置<br></strong><span class="hl-red"><strong>[113-2-6]</strong></span></td>
+<td>● <span class="hl-red"><strong>穿過硬腦膜與蜘蛛網膜</strong></span><br>→ 注入<strong>蜘蛛網膜下腔 (含有 CSF)</strong><br>● 成人通常在 <span class="hl-blue"><strong>L3-L4 以下施打 </strong></span><br>(避開脊髓)</td>
+<td>● 注入<span class="hl-red"><strong>硬脊膜外腔</strong></span><br>● 可在頸椎、胸椎、腰椎<span class="hl-blue"><strong>任何節段施打 </strong></span><br>(如胸椎用於開胸手術止痛)</td>
+</tr>
+<tr>
+<td><strong>定位方式<br></strong></td>
+<td>● 看到清澈的腦脊髓液 (CSF) 流出</td>
+<td>● <span class="hl-orange"><strong>阻力消失法 (Loss of resistance)</strong></span>：<br>  • 針尖穿透<span class="hl-red"><strong>黃韌帶 (Ligamentum flavum)</strong></span> <strong>時阻力</strong><span class="hl-red"><strong>驟降</strong></span></td>
+</tr>
+<tr>
+<td><strong>高度影響因子<br></strong><span class="hl-red"><strong>[114-1-4]</strong></span></td>
+<td><strong>● 對麻醉皮節位置影響：<br>  • </strong><span class="hl-red"><span class="bg-yellow"><strong>藥物比重 (Baricity，最重要)</strong></span></span><strong><br>  • </strong>病患<strong>姿勢</strong>、藥物劑量/體積<strong><br>  • </strong>病患身高體重<br><strong>⚠️ 考點提醒：<br></strong>  • 局部麻藥的給藥速度<span class="hl-red"><strong>影響較小</strong></span></td>
+<td>● 藥物體積 (Volume) 與注射部位</td>
+</tr>
+<tr>
+<td><strong>優點與應用<br></strong><span class="hl-red"><strong>[114-1-5]</strong></span></td>
+<td>● 作用<span class="hl-red"><strong>快</strong></span>、<strong>阻斷完全</strong><br>● <strong>副作用</strong>：<br>  • 交感神經阻斷導致<span class="hl-purple"><strong>低血壓</strong></span></td>
+<td>● 作用較<span class="hl-red"><strong>慢</strong></span>，<span class="hl-teal"><strong>可置入導管持續給藥</strong></span><br>● 常應用於<span class="hl-red"><strong>無痛分娩 (T10-L1)</strong></span><br>  • 使用<span class="hl-teal"><strong>低濃度 Bupivacaine + 少量 Fentanyl<br> </strong></span><strong>◦</strong><span class="hl-teal"><strong> Bupivacaine </strong></span><strong>心臟毒性</strong><span class="hl-red"><strong>高</strong></span><span class="hl-teal"><strong><br> </strong></span><strong>◦</strong><span class="hl-teal"><strong> Ropivacaine </strong></span><strong>心臟毒性較小</strong><br>  • 運動阻滯少 → <span class="hl-red"><strong>可</strong></span><strong>維持運動功能</strong> (可下床走動)<br>● <strong>可以加入低劑量鴉片類藥物：</strong><br>  • 能在<span class="hl-red"><strong>減少</strong></span><strong>局部麻醉劑濃度</strong>下維持止痛效果<br><strong>  • </strong><span class="hl-red"><strong>降低</strong></span><strong>運動阻滯<br>  • </strong><span class="hl-red"><strong>減少</strong></span><strong>局麻毒性風險<br>  • </strong><span class="hl-red"><strong>不會</strong></span><strong>增加剖腹產、產前助產等不良事件</strong></td>
+</tr>
+</tbody>
+</table></div>
+<div class="callout tip"><span class="callout-icon">💡</span><div class="callout-body"><strong><strong>產婦的硬脊膜外麻醉 (無痛分娩) </strong><span class="hl-red"><strong></strong></span></strong><div class="ref-tags"><span class="ref-tag">112-2-7</span></div></div></div>
+<div class="table-wrap"><table>
+<tbody>
+<tr>
+<td class="cell-gray"><strong>項目</strong></td>
+<td class="cell-gray"><strong>內容描述</strong></td>
+</tr>
+<tr>
+<td><strong>目的</strong></td>
+<td>● 降低產婦分娩期間的疼痛與不適感<br>● 有助於縮短產程</td>
+</tr>
+<tr>
+<td><strong>方式</strong></td>
+<td>● 從 L2-L4 高度進針，穿過黃韌帶後朝頭端置入硬脊膜外導管，導管延伸至 T10-L1 高度後給藥<br>● 置放後先給予測試劑量（test dose），若導管移位入脊髓腔內，給藥後的運動抑制會比硬膜外更明顯<br>● 留置軟管，於分娩中持續給藥或漸進式調整劑量</td>
+</tr>
+<tr>
+<td><strong>藥物</strong></td>
+<td>● <strong>局部麻醉劑：</strong>如 lidocaine、bupivacaine<br>● 鴉片類神經止痛藥：如 morphine、fentanyl<br>● 測試劑量（test dose）含有 epinephrine 幫助止血</td>
+</tr>
+<tr>
+<td><strong>使用時機</strong></td>
+<td>●<strong>第一產程</strong>：<br>  • 產婦開始<strong>有規律宮縮</strong>或<strong>有止痛需求</strong>時即可考慮無痛分娩 (<span class="hl-red"><strong>不用</strong></span>等子宮頸口開到什麼程度)<br>  • 臨床研究發現第一產程早期（子宮頸口 < 4-5 cm）施行，與晚期（子宮頸口 ≥ 4-5 cm）相比：<br>      ◦<span class="hl-red"><span class="bg-yellow"><strong> 無產程延長或剖腹產風險的顯著差異，且止痛效果更好</strong></span></span><br>●<strong>第二產程</strong>：<br>  • 可持續使用到第二產程初期<br>  • 若持續使用於第二產程，可能因麻醉過度而延長產程時間 → 第二產程停滯標準有因此調整</td>
+</tr>
+<tr>
+<td><strong>副作用</strong></td>
+<td>● 包含<strong>頭痛、噁心嘔吐、低血壓、呼吸抑制</strong><br>● 發生率與嚴重度皆比脊髓麻醉（spinal anesthesia）<span class="hl-red"><strong>輕微</strong></span></td>
+</tr>
+</tbody>
+</table></div>
+<div class="section">
+  <div class="section-header">
+    <h3 id="sec-14">特殊疾病麻醉注意事項</h3>
+    <div class="ref-tags"><span class="ref-tag">114-2-7</span><span class="ref-tag">114-2-6</span><span class="ref-tag">109-1-3</span><span class="ref-tag">108-2-7</span><span class="ref-tag">108-2-6</span><span class="ref-tag">108-1-5</span></div>
+  </div>
+  <div class="content">
+<p><strong><strong>孕婦麻醉</strong></strong></p>
+<ul>
+<li><strong>生理變化：</strong><ul>
+<li>心輸出量 (CO) 增加</li>
+</ul>
+<ul>
+<li><strong>功能性肺餘容量 (FRC) 降低</strong> (易缺氧)</li>
+</ul>
+<ul>
+<li>MAC 下降</li>
+</ul>
+<ul>
+<li>下食道括約肌張力下降 (易逆流)</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>平躺會造成<span class="hl-purple"><strong>仰臥低血壓症候群 (壓迫下腔靜脈 IVC) → </strong></span>處置為<span class="hl-teal"><strong>子宮左推 (或右臀墊高)</strong></span></li>
+</ul>
+<ul>
+<li><strong>剖腹產全麻：</strong><ul>
+<li><span class="hl-red"><span class="bg-yellow"><strong>一律視為飽食 (Full stomach) → 採用 RSI 快速順序插管，預防吸入性肺炎</strong></span></span></li>
+</ul>
+<ul>
+<li><strong>肌鬆劑選擇：</strong><ul>
+<li>快速順序插管 (RSI) 首選 Succinylcholine (SCH)</li>
+</ul>
+<ul>
+<li>因其起效快、代謝迅速，且極少通過胎盤，不影響新生兒自主呼吸</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>鴉片類藥物時機：</strong><ul>
+<li>Opioids（及苯二氮平類 BZD）必須在<span class="hl-red"><strong>胎兒娩出後才可</strong></span>由靜脈給予，以避免娩出前經胎盤導致新生兒呼吸抑制</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>麻醉維持調控：</strong><ul>
+<li>胎兒娩出後，吸入性麻醉氣體濃度應<strong>調降至 0.5 MAC</strong>，並改以靜脈藥物維持</li>
+</ul>
+<ul>
+<li>主因為高濃度吸入性麻醉劑會抑制子宮平滑肌收縮，增加產後大出血風險</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong><strong>老年人麻醉</strong></strong></p>
+<ul>
+<li>器官功能與儲備力 (Functional reserve) 下降，<strong>藥物需求劑量</strong><span class="hl-red"><strong>減少</strong></span></li>
+</ul>
+<ul>
+<li>術後常見併發症為<span class="hl-purple"><strong>術後譫妄 (POD)</strong></span> 與<span class="hl-purple"><strong>術後認知功能障礙 (POCD)</strong></span></li>
+</ul>
+<p><strong><strong>肥胖病患 (BMI > 30)</strong></strong></p>
+<ul>
+<li>極易合併<span class="hl-purple"><strong>阻塞性睡眠呼吸中止 (OSA)</strong></span>，為困難插管的高風險群</li>
+</ul>
+<ul>
+<li><strong>功能性肺餘容量 (FRC) </strong><span class="hl-red"><strong>顯著下降</strong></span></li>
+</ul>
+<p><strong><strong>嚴重主動脈瓣狹窄 (Severe AS)</strong></strong></p>
+<ul>
+<li>麻醉原則為<strong>維持足夠的前負荷 (Preload) 與後負荷 (Afterload)，</strong><span class="hl-blue"><strong>避免心跳過快或過慢 (維持 Sinus rhythm)</strong></span></li>
+</ul>
+<ul>
+<li><span class="hl-red"><span class="bg-red"><strong>切忌因血管過度擴張導致嚴重低血壓</strong></span></span></li>
+</ul>
+<p><strong><strong>心律調節器 (CIED) 病患</strong></strong></p>
+<ul>
+<li>術前應評估是否需改為非同步模式 (Asynchronous mode)</li>
+</ul>
+<ul>
+<li>術中應<span class="hl-blue"><strong>避免電燒刀干擾</strong></span>，心電圖監視器應調整至 <strong>Monitor / Filter mode</strong> (以免干擾波影響判讀)，並搭配動脈導管或 SpO2 確認實際血流脈搏</li>
+</ul>
+
+
+  </main>
+</div>
+
+<button id="totop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  const main    = document.getElementById('main');
+  const btn     = document.getElementById('menu-toggle');
+  const isMobile = window.innerWidth <= 700;
+  if (isMobile) {
+    const isOpen = sidebar.classList.contains('open');
+    sidebar.classList.toggle('open', !isOpen);
+    overlay.classList.toggle('visible', !isOpen);
+  } else {
+    const isCollapsed = sidebar.classList.contains('collapsed');
+    sidebar.classList.toggle('collapsed', !isCollapsed);
+    main.classList.toggle('expanded', !isCollapsed);
+  }
+  btn.classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('visible');
+  document.getElementById('menu-toggle').classList.remove('open');
+}
+function togglePart(header) {
+  header.classList.toggle('open');
+  const sections = header.nextElementSibling;
+  if (sections && sections.classList.contains('toc-sections')) {
+    sections.classList.toggle('open');
+  }
+}
+(function() {
+  const sections = document.querySelectorAll('h2[id], h3[id]');
+  const links = document.querySelectorAll('.toc-sec');
+  function onScroll() {
+    let current = '';
+    const scrollY = window.scrollY + 80;
+    sections.forEach(el => {
+      if (el.getBoundingClientRect().top + window.scrollY <= scrollY) current = el.id;
+    });
+    links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+document.querySelectorAll('.toc-sec').forEach(a => {
+  a.addEventListener('click', () => { if (window.innerWidth <= 700) closeSidebar(); });
+});
+
+</script>
+</body>
+</html>
